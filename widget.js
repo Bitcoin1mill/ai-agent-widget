@@ -258,7 +258,7 @@ async function sendMessage() {
   showTyping();
 
   try {
-    const response = await fetch("nodejs-production-866a.up.railway.app/api/message", {
+    const response = await fetch("https://nodejs-production-866a.up.railway.app/api/message", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
