@@ -192,7 +192,7 @@ const win = document.createElement("div");
 win.id = "ai-widget-window";
 win.innerHTML = `
   <div id="ai-header">
-    <img src="https://ai-agent-widget.pages.dev/pineapple-logo.png" alt="Logo" />
+    <img src="" style="display:none" />
     <div id="ai-header-text">
       <div class="title">Revival Med Spa</div>
       <div class="subtitle">Assistant</div>
