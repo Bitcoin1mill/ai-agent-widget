@@ -267,7 +267,7 @@
         </div>
         <div id="ai-header-text">
           <div class="title">${escapeHtml(headerTitle)}</div>
-          <div class="subtitle"><span class="ai-dot"></span> Ready to Assist • ${escapeHtml(headerSubtitle)}</div>
+          <div class="subtitle"><span class="ai-dot"></span> Ready to Assist - ${escapeHtml(headerSubtitle)}</div>
         </div>
       </div>
       <div id="ai-header-actions">
@@ -361,11 +361,11 @@
   }
 
   function showWelcome() {
-    addMessage(
-      `Hi! I'm the ${headerTitle} assistant. Ask me about services, hours, pricing, or booking.`,
-      "ai"
-    );
-  }
+  addMessage(
+    "Hi there, how can I help today?",
+    "ai"
+  );
+}
 
   // Toggle open/close
   btn.onclick = () => {
