@@ -1,24 +1,28 @@
 // =======================
-// AI CHAT WIDGET (FIN STYLE v2)
+// AI CHAT WIDGET (FIN STYLE v2 - clean icons)
 // =======================
 
 (function () {
-  // Prevent double-load
-  if (window.__aiWidgetLoadedV2) return;
-  window.__aiWidgetLoadedV2 = true;
+  if (window.__aiWidgetLoadedV2Clean) return;
+  window.__aiWidgetLoadedV2Clean = true;
 
-  // ---- CONFIG (safe defaults) ----
   const BACKEND_URL = "https://nodejs-production-866a.up.railway.app/api/message";
 
-  // Pull config from the script tag that loaded this file
   const scriptEl = document.currentScript;
   const businessId = Number(scriptEl?.getAttribute("data-business") || "1");
-
   const headerTitle = scriptEl?.getAttribute("data-title") || "Revival Med Spa";
   const headerSubtitle = scriptEl?.getAttribute("data-subtitle") || "Assistant";
 
-  // Storage key per business so each site has its own chat history
   const STORAGE_KEY = `ai_widget_history_biz_${businessId}`;
+
+  function escapeHtml(str) {
+    return String(str ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
 
   // ---- Styles ----
   const style = document.createElement("style");
@@ -40,7 +44,6 @@
       z-index: 9999999;
       transition: transform 0.18s ease;
       color: white;
-      font-size: 26px;
       user-select: none;
     }
     #ai-widget-btn:hover { transform: scale(1.05); }
@@ -91,12 +94,11 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background: #1a1a1b;
+      background: #161617;
       border: 1px solid #2a2a2a;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
       color: #eaeaea;
       flex: 0 0 auto;
     }
@@ -150,7 +152,6 @@
       cursor: pointer;
       user-select: none;
       transition: 0.15s ease;
-      font-size: 16px;
     }
     .ai-icon-btn:hover { background: #1c1c1d; }
 
@@ -183,12 +184,6 @@
       color: #fff;
       align-self: flex-end;
     }
-    .meta {
-      font-size: 11px;
-      color: #8d8d8e;
-      margin-top: -6px;
-      align-self: flex-start;
-    }
 
     #ai-input-area {
       border-top: 1px solid #222;
@@ -213,18 +208,17 @@
       height: 42px;
       border-radius: 12px;
       background: #3b82f6;
+      border: 1px solid rgba(255,255,255,0.06);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       color: white;
-      font-size: 18px;
       user-select: none;
       flex: 0 0 auto;
     }
     #ai-send:hover { background: #2563eb; }
 
-    /* typing dots inside a message bubble */
     .typingDot {
       display: inline-block;
       width: 7px;
@@ -238,7 +232,6 @@
     .typingDot:nth-child(3) { animation-delay: 0.4s; }
     @keyframes blink { 0%{opacity:.2} 20%{opacity:1} 100%{opacity:.2} }
 
-    /* mobile */
     @media (max-width: 420px) {
       #ai-widget-window {
         right: 12px;
@@ -254,7 +247,11 @@
   // ---- DOM ----
   const btn = document.createElement("div");
   btn.id = "ai-widget-btn";
-  btn.innerHTML = "💬";
+  btn.innerHTML = `
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M7.5 20.5c2.2-1.1 3.2-1.4 4.5-1.4h6c2.2 0 4-1.8 4-4V8c0-2.2-1.8-4-4-4H6C3.8 4 2 5.8 2 8v7c0 2.2 1.8 4 4 4h1.2c.3 0 .5.3.3.5l-1 1.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    </svg>
+  `;
   document.body.appendChild(btn);
 
   const win = document.createElement("div");
@@ -262,15 +259,30 @@
   win.innerHTML = `
     <div id="ai-header">
       <div id="ai-header-left">
-        <div id="ai-header-avatar">🍍</div>
+        <div id="ai-header-avatar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 2c2 2 4 3 6 3-2 2-4 3-6 3S8 7 6 5c2 0 4-1 6-3Z" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 10c0-2 2-4 4-4s4 2 4 4c0 5-2 12-4 12s-4-7-4-12Z" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </div>
         <div id="ai-header-text">
           <div class="title">${escapeHtml(headerTitle)}</div>
-          <div class="subtitle"><span class="ai-dot"></span> Online now • ${escapeHtml(headerSubtitle)}</div>
+          <div class="subtitle"><span class="ai-dot"></span> Ready to Assist • ${escapeHtml(headerSubtitle)}</div>
         </div>
       </div>
       <div id="ai-header-actions">
-        <div class="ai-icon-btn" id="ai-clear" title="Clear">🧹</div>
-        <div class="ai-icon-btn" id="ai-close" title="Close">✕</div>
+        <div class="ai-icon-btn" id="ai-clear" title="Clear">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 6h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M8 6l1-2h6l1 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M7 6l1 16h8l1-16" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="ai-icon-btn" id="ai-close" title="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
       </div>
     </div>
 
@@ -278,7 +290,12 @@
 
     <div id="ai-input-area">
       <input id="ai-input" placeholder="Ask a question..." />
-      <div id="ai-send">➤</div>
+      <div id="ai-send" aria-label="Send">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 12h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M12 6l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
     </div>
   `;
   document.body.appendChild(win);
@@ -286,30 +303,11 @@
   const bodyEl = () => document.querySelector("#ai-body");
   const inputEl = () => document.querySelector("#ai-input");
 
-  // ---- Helpers ----
-  function escapeHtml(str) {
-    return String(str ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
-
-  function addMessage(text, sender = "ai", meta = "") {
+  function addMessage(text, sender = "ai") {
     const msg = document.createElement("div");
     msg.className = `msg ${sender}`;
     msg.textContent = text;
-
     bodyEl().appendChild(msg);
-
-    if (meta) {
-      const m = document.createElement("div");
-      m.className = "meta";
-      m.textContent = meta;
-      bodyEl().appendChild(m);
-    }
-
     msg.scrollIntoView({ behavior: "smooth", block: "end" });
     persistHistory();
   }
@@ -333,7 +331,6 @@
   }
 
   function persistHistory() {
-    // Store only message bubbles (not typing)
     const nodes = Array.from(bodyEl().querySelectorAll(".msg"));
     const history = nodes
       .filter(n => n.id !== "ai-typing")
@@ -365,16 +362,15 @@
 
   function showWelcome() {
     addMessage(
-      `Hi! I’m the ${headerTitle} assistant. Ask me about services, hours, pricing, or booking.`,
+      `Hi! I'm the ${headerTitle} assistant. Ask me about services, hours, pricing, or booking.`,
       "ai"
     );
   }
 
-  // ---- Toggle open/close ----
+  // Toggle open/close
   btn.onclick = () => {
     win.classList.toggle("open");
     if (win.classList.contains("open")) {
-      // focus input when opened
       setTimeout(() => inputEl().focus(), 150);
     }
   };
@@ -387,7 +383,6 @@
     clearHistory();
   };
 
-  // ---- Main send ----
   async function sendMessage() {
     const text = inputEl().value.trim();
     if (!text) return;
@@ -415,7 +410,7 @@
         return;
       }
 
-      addMessage(data.reply || "I’m here to help!", "ai");
+      addMessage(data.reply || "I'm here to help!", "ai");
     } catch (e) {
       hideTyping();
       addMessage("Network error. Please try again.", "ai");
@@ -423,14 +418,10 @@
   }
 
   document.querySelector("#ai-send").onclick = sendMessage;
-
   inputEl().addEventListener("keydown", (e) => {
-    // Enter sends; Shift+Enter would normally add newline, but this is an input (single line).
     if (e.key === "Enter") sendMessage();
   });
 
-  // ---- Init ----
   const hadHistory = loadHistory();
   if (!hadHistory) showWelcome();
-
 })();
