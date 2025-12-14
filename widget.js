@@ -160,9 +160,9 @@
       <div>
         <div id="revival-title">Revival Med Spa</div>
         <div id="revival-status">
-          <span class="dot"></span>
-          Online - Ready to help
-        </div>
+  <span class="dot"></span>
+  Assistant
+</div>
       </div>
     </div>
 
