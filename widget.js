@@ -1,178 +1,214 @@
 // =============================
 // CONFIG (EDIT THESE 2 LINES)
 // =============================
-const BACKEND_URL = "https://YOUR-RAILWAY-URL-HERE"; // no trailing slash
+const BACKEND_URL = nodejs-production-866a.up.railway.app; // no trailing slash
 const BUSINESS_ID = 1;
 
-// =============================
-// WIDGET UI (Intercom-ish)
-// =============================
 (function () {
   if (window.__REVIVAL_WIDGET_LOADED__) return;
   window.__REVIVAL_WIDGET_LOADED__ = true;
 
+  // ---------- Styles (high specificity + !important to avoid site CSS conflicts)
   const styles = document.createElement("style");
   styles.innerHTML = `
   #revival-launcher {
-    position: fixed; right: 20px; bottom: 20px; width: 56px; height: 56px;
-    border-radius: 999px; border: 0; cursor: pointer;
-    background: #2f6bff; color: #fff; box-shadow: 0 12px 30px rgba(0,0,0,.35);
-    display:flex; align-items:center; justify-content:center;
-    font-size: 22px;
-    z-index: 999999;
+    position: fixed !important;
+    right: 20px !important;
+    bottom: 20px !important;
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 999px !important;
+    border: 0 !important;
+    cursor: pointer !important;
+    background: #2f6bff !important;
+    color: #fff !important;
+    box-shadow: 0 12px 30px rgba(0,0,0,.35) !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    font-size: 16px !important;
+    z-index: 2147483647 !important;
   }
 
   #revival-widget {
-    position: fixed; right: 20px; bottom: 90px;
-    width: 360px; height: 520px; border-radius: 18px;
-    background: #0f0f10; border: 1px solid #202025;
-    box-shadow: 0 18px 50px rgba(0,0,0,.5);
-    overflow: hidden; display: none; z-index: 999999;
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    position: fixed !important;
+    right: 20px !important;
+    bottom: 90px !important;
+    width: 360px !important;
+    height: 520px !important;
+    border-radius: 18px !important;
+    background: #0f0f10 !important;
+    border: 1px solid #202025 !important;
+    box-shadow: 0 18px 50px rgba(0,0,0,.5) !important;
+    overflow: hidden !important;
+    display: none !important;
+    z-index: 2147483647 !important;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial !important;
   }
 
   #revival-header {
-    height: 64px; padding: 12px 12px 10px 12px;
-    display:flex; align-items:center; justify-content:space-between;
-    border-bottom: 1px solid #202025;
-    background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0));
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 64px !important;
+    padding: 12px 12px 10px 12px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    border-bottom: 1px solid #202025 !important;
+    background: rgba(255,255,255,.02) !important;
   }
 
-  #revival-brand {
-    display:flex; align-items:center; gap: 10px;
-    color:#fff;
-  }
-
+  #revival-brand { display:flex !important; align-items:center !important; gap:10px !important; color:#fff !important; }
   #revival-logo {
-    width: 34px; height: 34px; border-radius: 10px;
-    background: #141416; border:1px solid #2b2b31;
-    display:flex; align-items:center; justify-content:center;
-    font-weight: 700; font-size: 14px; color:#fff;
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 10px !important;
+    background: #141416 !important;
+    border:1px solid #2b2b31 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    font-weight: 800 !important;
+    font-size: 14px !important;
+    color:#fff !important;
   }
+  #revival-title { line-height: 1.05 !important; }
+  #revival-title .name { font-size: 14px !important; font-weight: 800 !important; }
+  #revival-title .status { font-size: 12px !important; opacity: .85 !important; margin-top: 2px !important; }
 
-  #revival-title { line-height: 1.05; }
-  #revival-title .name { font-size: 14px; font-weight: 700; }
-  #revival-title .status {
-    font-size: 12.6px; opacity: .85; margin-top: 2px;
-    display:flex; align-items:center; gap:6px;
-  }
-  .revival-dot { width: 8px; height: 8px; border-radius: 999px; background: #23c552; display:inline-block; }
-
-  #revival-actions { display:flex; gap: 8px; }
+  #revival-actions { display:flex !important; gap:8px !important; }
   .revival-iconbtn {
-    width: 34px; height: 34px; border-radius: 10px;
-    background:#141416; border:1px solid #2b2b31; color:#d7d7de;
-    cursor:pointer; display:flex; align-items:center; justify-content:center;
-    font-size: 16px;
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 10px !important;
+    background:#141416 !important;
+    border:1px solid #2b2b31 !important;
+    color:#d7d7de !important;
+    cursor:pointer !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    font-size: 14px !important;
   }
-  .revival-iconbtn:hover { filter: brightness(1.08); }
 
   #revival-messages {
-    height: calc(520px - 64px - 64px);
-    padding: 12px;
-    overflow: auto;
+    position: absolute !important;
+    top: 64px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 64px !important; /* leaves room for input bar */
+    padding: 12px !important;
+    overflow: auto !important;
   }
 
-  .msgrow { display:flex; margin: 10px 0; }
-  .msgrow.bot { justify-content:flex-start; }
-  .msgrow.user { justify-content:flex-end; }
+  .msgrow { display:flex !important; margin: 10px 0 !important; }
+  .msgrow.bot { justify-content:flex-start !important; }
+  .msgrow.user { justify-content:flex-end !important; }
 
   .bubble {
-    max-width: 78%;
-    padding: 10px 12px;
-    border-radius: 14px;
-    font-size: 13px;
-    line-height: 1.25;
-    white-space: pre-wrap;
+    max-width: 78% !important;
+    padding: 10px 12px !important;
+    border-radius: 14px !important;
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+    white-space: pre-wrap !important;
   }
 
   .bubble.bot {
-    background: #17171a;
-    border: 1px solid #26262c;
-    color: #f1f1f4;
-    border-top-left-radius: 10px;
+    background: #17171a !important;
+    border: 1px solid #26262c !important;
+    color: #f1f1f4 !important;
+    border-top-left-radius: 10px !important;
   }
 
   .bubble.user {
-    background: #2f6bff;
-    color: #fff;
-    border: 1px solid rgba(255,255,255,.12);
-    border-top-right-radius: 10px;
+    background: #2f6bff !important;
+    color: #fff !important;
+    border: 1px solid rgba(255,255,255,.12) !important;
+    border-top-right-radius: 10px !important;
   }
 
   #revival-inputbar {
-    height: 64px;
-    border-top: 1px solid #202025;
-    display:flex; gap:10px; align-items:center;
-    padding: 10px;
-    background: #0f0f10;
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    height: 64px !important;
+    border-top: 1px solid #202025 !important;
+    display:flex !important;
+    gap:10px !important;
+    align-items:center !important;
+    padding: 10px !important;
+    background: #0f0f10 !important;
   }
 
   #revival-input {
-    flex:1;
-    background:#141416;
-    border: 1px solid #2b2b31;
-    border-radius: 14px;
-    padding: 12px;
-    color:#fff;
-    font-size: 13px;
-    outline: none;
+    flex:1 !important;
+    background:#141416 !important;
+    border: 1px solid #2b2b31 !important;
+    border-radius: 14px !important;
+    padding: 12px !important;
+    color:#fff !important;
+    font-size: 13px !important;
+    outline: none !important;
   }
 
   #revival-send {
-    width: 44px; height: 44px; border-radius: 14px;
-    border: 0; cursor:pointer;
-    background:#2f6bff; color:#fff;
-    display:flex; align-items:center; justify-content:center;
-    font-size: 16px; font-weight: 700;
+    width: 64px !important;
+    height: 44px !important;
+    border-radius: 14px !important;
+    border: 0 !important;
+    cursor:pointer !important;
+    background:#2f6bff !important;
+    color:#fff !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
   }
 
   .revival-formcard {
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 14px;
-    background:#141416;
-    border: 1px solid #26262c;
-    color:#fff;
+    margin: 10px 0 !important;
+    padding: 10px !important;
+    border-radius: 14px !important;
+    background:#141416 !important;
+    border: 1px solid #26262c !important;
+    color:#fff !important;
   }
-  .revival-formcard .label {
-    font-size: 12.6px; opacity:.9; margin-bottom: 8px;
-  }
+  .revival-formcard .label { font-size: 12.6px !important; opacity:.9 !important; margin-bottom: 8px !important; }
   .revival-formcard input {
-    width: 100%;
-    padding: 10px;
-    margin: 6px 0;
-    border-radius: 12px;
-    border: 1px solid #2b2b31;
-    background:#0f0f10;
-    color:#fff;
-    font-size: 13px;
-    outline:none;
+    width: 100% !important;
+    padding: 10px !important;
+    margin: 6px 0 !important;
+    border-radius: 12px !important;
+    border: 1px solid #2b2b31 !important;
+    background:#0f0f10 !important;
+    color:#fff !important;
+    font-size: 13px !important;
+    outline:none !important;
   }
   .revival-formcard button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 8px;
-    border-radius: 12px;
-    border: 0;
-    background:#2f6bff;
-    color:#fff;
-    font-weight: 700;
-    cursor:pointer;
+    width: 100% !important;
+    padding: 10px !important;
+    margin-top: 8px !important;
+    border-radius: 12px !important;
+    border: 0 !important;
+    background:#2f6bff !important;
+    color:#fff !important;
+    font-weight: 800 !important;
+    cursor:pointer !important;
   }
-  .revival-err {
-    margin-top: 8px; font-size: 12px;
-    color:#ff6b6b; display:none;
-  }
+  .revival-err { margin-top: 8px !important; font-size: 12px !important; color:#ff6b6b !important; display:none !important; }
   `;
   document.head.appendChild(styles);
 
-  // Launcher (chat bubble icon)
+  // ---------- Launcher
   const launcher = document.createElement("button");
   launcher.id = "revival-launcher";
-  launcher.innerHTML = "💬";
+  launcher.textContent = "Chat";
   document.body.appendChild(launcher);
 
+  // ---------- Widget container
   const widget = document.createElement("div");
   widget.id = "revival-widget";
   widget.innerHTML = `
@@ -181,11 +217,11 @@ const BUSINESS_ID = 1;
         <div id="revival-logo">R</div>
         <div id="revival-title">
           <div class="name">Revival Med Spa</div>
-          <div class="status"><span class="revival-dot"></span><span>Assistant</span></div>
+          <div class="status">Assistant</div>
         </div>
       </div>
       <div id="revival-actions">
-        <button class="revival-iconbtn" id="revival-close" title="Close">✕</button>
+        <button class="revival-iconbtn" id="revival-close" title="Close">X</button>
       </div>
     </div>
 
@@ -193,7 +229,7 @@ const BUSINESS_ID = 1;
 
     <div id="revival-inputbar">
       <input id="revival-input" placeholder="Ask a question..." />
-      <button id="revival-send">➤</button>
+      <button id="revival-send">Send</button>
     </div>
   `;
   document.body.appendChild(widget);
@@ -215,7 +251,6 @@ const BUSINESS_ID = 1;
   }
 
   function showLeadForm(leadId) {
-    // avoid showing multiple times
     if (localStorage.getItem("lead_submitted_" + leadId)) return;
 
     const card = document.createElement("div");
@@ -223,12 +258,11 @@ const BUSINESS_ID = 1;
     card.innerHTML = `
       <div class="label">Want the team to reach out and confirm details?</div>
       <input id="lead_name" placeholder="Name" />
-      <input id="lead_phone" placeholder="Phone (best)" />
+      <input id="lead_phone" placeholder="Phone" />
       <input id="lead_email" placeholder="Email (optional)" />
-      <button id="lead_submit">Send</button>
+      <button id="lead_submit">Submit</button>
       <div class="revival-err" id="lead_err"></div>
     `;
-
     messagesEl.appendChild(card);
     messagesEl.scrollTop = messagesEl.scrollHeight;
 
@@ -240,7 +274,7 @@ const BUSINESS_ID = 1;
 
       if (!name || !phone) {
         err.style.display = "block";
-        err.textContent = "Please enter name + phone.";
+        err.textContent = "Please enter name and phone.";
         return;
       }
 
@@ -252,12 +286,12 @@ const BUSINESS_ID = 1;
 
       if (!r.ok) {
         err.style.display = "block";
-        err.textContent = "Couldn’t save—please try again.";
+        err.textContent = "Could not save. Try again.";
         return;
       }
 
       localStorage.setItem("lead_submitted_" + leadId, "1");
-      card.innerHTML = `✅ Got it — the team will reach out shortly.`;
+      card.textContent = "Saved. The team will reach out shortly.";
       card.style.fontSize = "13px";
     };
   }
@@ -279,9 +313,8 @@ const BUSINESS_ID = 1;
       const data = await r.json();
       if (!r.ok) throw new Error(data?.error || "Request failed");
 
-      addMessage("bot", data.reply || "How can I help today?");
+      addMessage("bot", data.reply || "Hi there, how can I help today?");
 
-      // ✅ Step 7: show form only when backend flags it
       if (data.capture_lead && data.lead_id) {
         showLeadForm(data.lead_id);
       }
